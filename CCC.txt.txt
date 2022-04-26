@@ -1,0 +1,110 @@
+package com.exceptionHandling.serviceImpl;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import com.exceptionHandling.model.Employee;
+import com.exceptionHandling.notFound.ExceptionNotFound;
+import com.exceptionHandling.repository.EmployeeRepository;
+import com.exceptionHandling.services.EmployeeServices;
+
+
+@Service
+public class EmployeeServiceImpl implements EmployeeServices{
+
+	@Autowired
+	EmployeeRepository employeerepository;
+	@Override
+	public Employee postData(Employee ep) {
+		Employee e=employeerepository.save(ep);
+		return e;
+	}
+
+	@Override
+	public List<Employee> getData() {
+		
+		List<Employee> li=employeerepository.findAll();
+		return li;
+	}
+
+	
+//	@Override
+//	public Optional<Employee> getDataById(int id) {
+//		
+//		Employee e=new Employee();
+//		System.out.println("------------------------------------");
+//		System.out.println(e.getId());
+//		Employee employee;
+//		if(employeerepository.findById(id).isEmpty())
+//		{
+//		
+//			throw new ExceptionNotFound("Id is not present");
+//		}
+//		else
+//		{
+//			employee=employeerepository.findById(id).get();
+//		}
+//		Optional<Employee> result=employeerepository.findById(id);
+//		if(result==null)
+//		{
+//			throw new ExceptionNotFound(id);
+//		}
+//		//return employeerepository.findById(id).orElseThrow(()-> new ExceptionNotFound(id));
+//		return result;
+	
+	//}
+	@ExceptionHandler(ExceptionNotFound.class)
+	public void handlerException(ExceptionNotFound e)
+	{
+		System.out.println("Exception occurs");
+	}
+	
+	
+	
+	
+	
+	
+	
+//		Optional<Employee> el = null;
+//		el=employeerepository.findById(id);
+//		el.orElseGet(()->new Employee());
+//		if (el.isPresent()) {
+//			return el;
+//		}else {
+//			throw new EmployeeServiceException();
+//		}
+	
+	
+	
+
+	@Transactional
+	
+	@Override
+	public void deleteData(int id) {
+		employeerepository.deleteById(id);
+		
+	}
+
+	@Override
+	public Employee updateData(Employee e, int id) {
+		
+		Employee em=employeerepository.save(e);
+		return em;
+	}
+
+	@Override
+	public Employee getDataById(int id) {
+		
+		return employeerepository.findById(id).get();
+	}
+
+	
+
+	
+}
